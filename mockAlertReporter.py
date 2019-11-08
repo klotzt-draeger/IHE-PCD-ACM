@@ -1,7 +1,7 @@
 #
 #  Copyright (c) 2011 * - 2019 Draegerwerk AG & Co. KGaA. All rights reserved.
 #  This program and the accompanying materials are made available under the terms
-#  of the Eclipse Public License v1.0 which is available at http://www.eclipse.org/legal/epl-v20.html
+#  of the Eclipse Public License v2.0 which is available at http://www.eclipse.org/legal/epl-v20.html
 #
 
 import threading
@@ -49,10 +49,10 @@ def createHeartbeatMsg():
     msg = PCD04Message()
     msg.createPCD04Message(AssignedPatientLocation=deviceLocation,
                             EquipII="{}^^{}^URN".format(deviceId, deviceId),
-                            PatientIdList="8888^^^^AN",
-                            PatientName="Data^Simulated^Patient^^^^L",
-                            PatientDoB="",
-                            PatientSex="",
+                            PatientIdList="HO2009001^^^Hospital^PI",
+                            PatientName="Hon^Albert^^^^^L",
+                            PatientDoB="18991230",
+                            PatientSex="M",
                             UniqueAlertUuid=deviceId,
                             AlertType=PCD04Message.HeartbeatAlarmType,
                             AlertText="",
@@ -66,6 +66,7 @@ def createHeartbeatMsg():
                             ObsValue="",
                             ObsUnit=None
                             )
+    msg.addWatchdogObxSegment(5)
     return msg
 
 

@@ -69,6 +69,9 @@ class PCD04Message:
         self.createObxSegmentAcm(6, "68168^MDC_ATTR_ALARM_PRIORITY^MDC", AlertKindPrioStr)
         self.createObxSegmentAcm(7, "68485^MDC_ATTR_ALERT_TYPE^MDC", AlertKind)
 
+    def addWatchdogObxSegment (self, timeoutPeriod, timeoutUnit="264320^MDC_DIM_SEC^MDC"):
+        self.createObxSegmentAcm (8, "67860^MDC_ATTR_CONFIRM_TIMEOUT^MDC", ObsValue=timeoutPeriod, ObsUnit=timeoutUnit, ObsValueType="NM")
+
     def createMshSegmentAcm(self, messageTimeStr, SendingFacility, ReceivingApplication, ProcessingId):
         MsgControlIdVal = str(self._myMsgControlIdIter)
         self._myMsgControlIdIter += 1

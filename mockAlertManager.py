@@ -70,7 +70,7 @@ if __name__ == '__main__':
                         print ("************ Got Heartbeat ************")
                         print ("Full message {}: {}".format(datetime.now(), pretty(m)))
                         answer.msh.children.get("MSH_9").value = "ACK^R40"
-                        answer.msa.children.get("MSA_1").value = "AA"
+                        answer.msa.children.get("MSA_1").value = "CA"
                         corId=m.msh.children.get("MSH_10").value
                         answer.msa.children.get("MSA_2").value = corId
                     else:
