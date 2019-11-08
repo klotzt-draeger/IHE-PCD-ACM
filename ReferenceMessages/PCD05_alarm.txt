@@ -1,0 +1,3 @@
+MSH|^~\&#||MockAM|||20191108165914||ORA^R41^ORA_R41|0||2.7
+OBR|||1^0225c7a9-0039-4b19-a710-ccf38abdae9d
+PRT|||Delivered

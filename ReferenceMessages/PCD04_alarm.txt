@@ -1,0 +1,11 @@
+MSH|^~\&|0000000000000001^EUI-64|IHE_AR|||20191108165909+0100||ORU^R40^ORU_R40|0|D|2.6|||AL|NE||||IHE_PCD_ACM_001^IHE PCD^1.3.6.1.4.1.19376.1.6.4.4^ISO
+PID|||8888^^^^AN||Data^Simulated^Patient^^^^L
+PV1|||TAM^^^SC8^^tkl
+OBR|1||1^0225c7a9-0039-4b19-a710-ccf38abdae9d^0000000000000001|196616^MDC_EVT_ALARM^MDC|||20191108165909+0100
+OBX|1|ST|196650^MDC_EVT_whatever^MDC|1.0.0.0.1|PVC/min > #||||||F|||||||urn:uuid:df041f5c-a3c9-11e9-8d8a-0050b612afeb^^urn:uuid:df041f5c-a3c9-11e9-8d8a-0050b612afeb^URN
+OBX|2|NM|68480^MDC_ATTR_ALERT_SOURCE^MDC|1.0.0.0.2|42||||||F|||||||urn:uuid:df041f5c-a3c9-11e9-8d8a-0050b612afeb^^urn:uuid:df041f5c-a3c9-11e9-8d8a-0050b612afeb^URN
+OBX|3|ST|68165^MDC_ATTR_EVENT_PHASE^MDC|1.0.0.0.3|continue||||||F|||||||urn:uuid:df041f5c-a3c9-11e9-8d8a-0050b612afeb^^urn:uuid:df041f5c-a3c9-11e9-8d8a-0050b612afeb^URN
+OBX|4|ST|68166^MDC_ATTR_ALARM_STATE^MDC|1.0.0.0.4|active||||||F|||||||urn:uuid:df041f5c-a3c9-11e9-8d8a-0050b612afeb^^urn:uuid:df041f5c-a3c9-11e9-8d8a-0050b612afeb^URN
+OBX|5|ST|68167^MDC_ATTR_ALARM_INACTIVATION_STATE^MDC|1.0.0.0.5|enabled||||||F|||||||urn:uuid:df041f5c-a3c9-11e9-8d8a-0050b612afeb^^urn:uuid:df041f5c-a3c9-11e9-8d8a-0050b612afeb^URN
+OBX|6|ST|68168^MDC_ATTR_ALARM_PRIORITY^MDC|1.0.0.0.6|PM||||||F|||||||urn:uuid:df041f5c-a3c9-11e9-8d8a-0050b612afeb^^urn:uuid:df041f5c-a3c9-11e9-8d8a-0050b612afeb^URN
+OBX|7|ST|68485^MDC_ATTR_ALERT_TYPE^MDC|1.0.0.0.7|SP||||||F|||||||urn:uuid:df041f5c-a3c9-11e9-8d8a-0050b612afeb^^urn:uuid:df041f5c-a3c9-11e9-8d8a-0050b612afeb^URN
