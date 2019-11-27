@@ -17,7 +17,7 @@ ApplicationAckType = "NE"  # The PCD TF requires that this field be valued as NE
 
 
 class PCD04Message:
-    HeartbeatAlarmType = "258047^MDC_EVT_ACTIVE^MDC"
+    HeartbeatAlarmType = "196614^MDC_EVT_ACTIVE^MDC"
 
     def getMessage(self):
         return self._ORU_R40
@@ -50,27 +50,35 @@ class PCD04Message:
                         AlertInactivationState="enabled",
                         SendingFacility="IHE_AR",
                         ReceivingApplication = None,
-                        ProcessingId="D"):
+                        ProcessingId="D",
+                        MdsType="",
+                        VmdType=""):
         messageTime = datetime.now().astimezone()
         messageTimeStr = messageTime.strftime("%Y%m%d%H%M%S%z")
 
         self.createMshSegmentAcm(messageTimeStr, SendingFacility, ReceivingApplication, ProcessingId)
         self.createPidSegmentAcm(PatientIdList, PatientName, PatientDoB, PatientSex)
         self.createPv1SegmentAcm(AssignedPatientLocation)
-        self._CTP = SrcContainmentTreeId
+
         self._EquipII = EquipII
         self.createObrSegmentAcm(messageTimeStr, UniqueAlertUuid, AlertCounter)
+        self._obxCount = 0
+        MdsTree = "{}.0.0".format(SrcContainmentTreeId.split(".")[0])
+        VmdTree = "{}.{}.0".format(SrcContainmentTreeId.split(".")[0], SrcContainmentTreeId.split(".")[1])
+        #AlertTree = SrcContainmentTreeId.split('.')[2]
 
-        self.createObxSegmentAcm(1, AlertType, AlertText)
-        self.createObxSegmentAcm(2, ObsType, ObsValue, ObsValueType=ObsValueType, ObsUnit=ObsUnit, ObsTimeStr=ObsDetTime)
-        self.createObxSegmentAcm(3, "68165^MDC_ATTR_EVENT_PHASE^MDC", AlertPhase)
-        self.createObxSegmentAcm(4, "68166^MDC_ATTR_ALARM_STATE^MDC", AlertState)
-        self.createObxSegmentAcm(5, "68167^MDC_ATTR_ALARM_INACTIVATION_STATE^MDC", AlertInactivationState)
-        self.createObxSegmentAcm(6, "68168^MDC_ATTR_ALARM_PRIORITY^MDC", AlertKindPrioStr)
-        self.createObxSegmentAcm(7, "68485^MDC_ATTR_ALERT_TYPE^MDC", AlertKind)
+        self.createObxSegmentAcm(0, MdsType, ObsValueType="", CTP=MdsTree)
+        self.createObxSegmentAcm(0, VmdType, ObsValueType="", CTP=VmdTree)
+        self.createObxSegmentAcm(1, AlertType, AlertText, CTP=SrcContainmentTreeId)
+        self.createObxSegmentAcm(2, ObsType, ObsValue, ObsValueType=ObsValueType, ObsUnit=ObsUnit, ObsTimeStr=ObsDetTime, CTP=SrcContainmentTreeId)
+        self.createObxSegmentAcm(3, "68481^MDC_ATTR_EVENT_PHASE^MDC", AlertPhase, CTP=SrcContainmentTreeId)
+        self.createObxSegmentAcm(4, "68482^MDC_ATTR_ALARM_STATE^MDC", AlertState, CTP=SrcContainmentTreeId)
+        self.createObxSegmentAcm(5, "68483^MDC_ATTR_ALARM_INACTIVATION_STATE^MDC", AlertInactivationState, CTP=SrcContainmentTreeId)
+        self.createObxSegmentAcm(6, "68484^MDC_ATTR_ALARM_PRIORITY^MDC", AlertKindPrioStr, CTP=SrcContainmentTreeId)
+        self.createObxSegmentAcm(7, "68485^MDC_ATTR_ALERT_TYPE^MDC", AlertKind, CTP=SrcContainmentTreeId)
 
-    def addWatchdogObxSegment (self, timeoutPeriod, timeoutUnit="264320^MDC_DIM_SEC^MDC"):
-        self.createObxSegmentAcm (8, "67860^MDC_ATTR_CONFIRM_TIMEOUT^MDC", ObsValue=timeoutPeriod, ObsUnit=timeoutUnit, ObsValueType="NM")
+    def addWatchdogObxSegment (self, timeoutPeriod, timeoutUnit="264320^MDC_DIM_SEC^MDC", MdsTree="1.0.0"):
+        self.createObxSegmentAcm (8, "67860^MDC_ATTR_CONFIRM_TIMEOUT^MDC", ObsValue=timeoutPeriod, ObsUnit=timeoutUnit, ObsValueType="NM", CTP=MdsTree)
 
     def createMshSegmentAcm(self, messageTimeStr, SendingFacility, ReceivingApplication, ProcessingId):
         MsgControlIdVal = str(self._myMsgControlIdIter)
@@ -86,7 +94,7 @@ class PCD04Message:
         self._ORU_R40.msh.children.get("MSH_11").value = ProcessingId  # Processing ID
         self._ORU_R40.msh.children.get("MSH_15").value = AcceptAckTypeAcm  # Accept Acknowledgment Type
         self._ORU_R40.msh.children.get("MSH_16").value = ApplicationAckType  # Application Acknowledgment Type
-        self._ORU_R40.msh.children.get("MSH_20").value = "IHE_PCD_ACM_001^IHE PCD^1.3.6.1.4.1.19376.1.6.4.4^ISO"  # IHE_PCD_ACM_001^IHE PCD^1.3.6.1.4.1.19376.1.6.4.4^ISO
+        self._ORU_R40.msh.children.get("MSH_21").value = "IHE_PCD_ACM_001^IHE PCD^1.3.6.1.4.1.19376.1.6.1.4.1^ISO"  # IHE_PCD_ACM_001^IHE PCD^1.3.6.1.4.1.19376.1.6.4.4^ISO
 
     def createPidSegmentAcm(self, PatientIdList, PatientName, PatientDoB, PatientSex) :
         pid = self._ORU_R40.add_segment("PID")
@@ -98,6 +106,7 @@ class PCD04Message:
     def createPv1SegmentAcm(self, AssignedPatientLocation):
         # PV1|||CU1^^9042^HOSP1
         pv1 = self._ORU_R40.add_segment("PV1")
+        pv1.children.get("PV1_2").value = "I"
         pv1.children.get("PV1_3").value = AssignedPatientLocation  # Assigned Patient Location
 
     def incAlertCounter (self):
@@ -198,21 +207,27 @@ class PCD04Message:
         obr.children.get("OBR_3").value = FillerOrderNumber  # Filler Order Number
         obr.children.get("OBR_4").value = "196616^MDC_EVT_ALARM^MDC"  # Universal Service Identifier
         obr.children.get("OBR_7").value = messageTimeStr  # Observation Date/Time
-        if (AlertUpdate > 0):
-            obr.children.get("OBR_29").value = parentAlert  # Parent
+    #    if (AlertUpdate > 0):
+        obr.children.get("OBR_29").value = parentAlert  # Parent
 
-    def createObxSegmentAcm(self, Set_ID, ObsId, ObsValue, ObsUnit=None, ObsTimeStr=None, ObsSite=None, ObsValueType="ST"):
+    def createObxSegmentAcm(self, Set_ID, ObsId, ObsValue=None, ObsUnit=None, ObsTimeStr=None, ObsSite=None, ObsValueType="ST", CTP="x.x.x"):
         obx = self._ORU_R40.add_segment("OBX")
-        obx.children.get("OBX_1").value = str(Set_ID)  # Set ID
-        obx.children.get("OBX_2").value = ObsValueType
+        self._obxCount += 1
+        obx.children.get("OBX_1").value = str(self._obxCount)  # Set ID
+        if ObsValueType!="":
+            obx.children.get("OBX_2").value = ObsValueType
+            obx.children.get("OBX_11").value = "F"  # Observation Result Status
+        else:
+            obx.children.get("OBX_11").value = "X"
 
         obx.children.get("OBX_3").value = ObsId  # Observation Identifier
-        obx.children.get("OBX_4").value = self._CTP + "." + str(Set_ID)  # Observation Sub-ID
-        obx.children.get("OBX_5").value = str(ObsValue)  # Observation Value
+        obx.children.get("OBX_4").value = CTP + "." + str(Set_ID)  # Observation Sub-ID
+        if ObsValue:
+            obx.children.get("OBX_5").value = str(ObsValue)  # Observation Value
+
         if ObsUnit is not None:
             obx.children.get("OBX_6").value = ObsUnit  # Units
 
-        obx.children.get("OBX_11").value = "F"  # Observation Result Status
 
         if (ObsTimeStr is not None):
             obx.children.get("OBX_14").value = ObsTimeStr  # Date/Time of the Observation

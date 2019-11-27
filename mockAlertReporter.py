@@ -13,7 +13,7 @@ import uuid
 stopEvent = threading.Event()
 sendHeartbeat = True
 deviceId = "uuid:df041f5c-a3c9-11e9-8d8a-0050b612afeb"
-deviceLocation = "Hosp^^^ICU1^^Bed3"
+deviceLocation = "POC^Room^Bed^fac^^^building^floor"
 
 outSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 outAddress = "127.0.0.1"
@@ -32,7 +32,7 @@ def sendAlert():
                             UniqueAlertUuid=deviceId,
                             AlertType="196670^MDC_EVT_LO^MDC",
                             AlertText="Low Alert",
-                            SrcContainmentTreeId="1.1.1.1",
+                            SrcContainmentTreeId="1.1.1",
                             AlertPhase="start",
                             AlertKindPrioStr="PM",
                             AlertKind="SP",
@@ -41,6 +41,8 @@ def sendAlert():
                             ObsValueType="NM",
                             ObsValue="42",
                             ObsUnit=None,
+                            MdsType="69837^MDC_DEV_METER_PHYSIO_MULTI_PARAM_MDS^MDC",
+                            VmdType="69686^MDC_DEV_ANALY_BLD_CHEM_MULTI_PARAM_VMD^MDC"
                             )
     outSocket.sendall(msg.getMessage().to_mllp().encode('UTF-8'))
 
@@ -56,7 +58,7 @@ def createHeartbeatMsg():
                             UniqueAlertUuid=deviceId,
                             AlertType=PCD04Message.HeartbeatAlarmType,
                             AlertText="",
-                            SrcContainmentTreeId="1.0.0.0",  # this refers to the first MDS
+                            SrcContainmentTreeId="1.1.1",  # this refers to the first MDS
                             AlertPhase="start",
                             AlertKindPrioStr="PN",  # not indicated, heartbeat only
                             AlertKind="SA",
@@ -66,7 +68,7 @@ def createHeartbeatMsg():
                             ObsValue="",
                             ObsUnit=None
                             )
-    msg.addWatchdogObxSegment(5)
+    msg.addWatchdogObxSegment(5, "1.0.0")
     return msg
 
 

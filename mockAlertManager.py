@@ -17,7 +17,7 @@ def _getObxSegment (msg, id):
     obx = msg.children.get("OBX")
     retVal = None
     for oneObx in obx:
-        if oneObx.children.get("OBX_1").value == str(id):
+        if oneObx.children.get("OBX_4").value.split(".")[3] == str(id):
             retVal = oneObx
         # for obxChild in oneObx.children:
             # print ("OBX Child: {}".format(obxChild.value))
@@ -65,10 +65,10 @@ if __name__ == '__main__':
                     seg1 = _getObxSegment(m, 1)
                     alarmTypeTxt = seg1.children.get("OBX_3").value
                     answer = Message(version="2.7")
-                    if alarmTypeTxt == "258047^MDC_EVT_ACTIVE^MDC":
+                    if alarmTypeTxt == "196614^MDC_EVT_ACTIVE^MDC":
                         # answer with ack
                         print ("************ Got Heartbeat ************")
-                        print ("Full message {}: {}".format(datetime.now(), pretty(m)))
+                        print ("Full message {}: \n{}".format(datetime.now(), pretty(m)))
                         answer.msh.children.get("MSH_9").value = "ACK^R40"
                         answer.msa.children.get("MSA_1").value = "CA"
                         corId=m.msh.children.get("MSH_10").value
@@ -76,7 +76,7 @@ if __name__ == '__main__':
                     else:
                         # answer with pcd-05 message
                         print ("************ Got Alarm {} ************".format(alarmTypeTxt))
-                        print ("Full message {}: {}".format(datetime.now(), pretty(m)))
+                        print ("Full message {}: \n{}".format(datetime.now(), pretty(m)))
                         counter = m.children.get("OBR").children.get("OBR_3").children[0].value
                         alarmId = m.children.get("OBR").children.get("OBR_3").children[1].value
                         answer.msh.children.get("MSH_9").value = "ORA^R41^ORA_R41"
@@ -84,7 +84,7 @@ if __name__ == '__main__':
                         answer.add_segment("OBR").children.get("OBR_3").value = "{}^{}".format(counter, alarmId)
                         answer.add_segment("PRT").children.get("PRT_3").value = "Delivered"
                         answer.msh.children.get("MSH_10").value = m.msh.children.get("MSH_10").value
-                    print ("Answering {}: {}".format(datetime.now(), pretty(answer)))
+                    print ("Answering {}: \n{}".format(datetime.now(), pretty(answer)))
                     inSock.sendall(answer.to_mllp().encode('UTF-8'))
                     print ("*******************************")
                 else:
